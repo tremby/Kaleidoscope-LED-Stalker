@@ -17,6 +17,7 @@
 
 #include <Kaleidoscope-LED-Stalker.h>
 #include <LEDUtils.h>
+#include <stdlib.h>
 
 namespace kaleidoscope {
 
@@ -110,8 +111,9 @@ cRGB BlazingTrail::compute(uint8_t *step) {
   // Fade hue linearly from orange to red
   uint8_t hue = hue_start + pos * (hue_end - hue_start);
 
-  // Fade value from full following a -x^4+1 curve
-  uint8_t val = 0xff * (1 - pos * pos * pos * pos);
+  // Fade value from full following a -x^4+1 curve plus random flicker
+  int16_t val16 = 0xff * (1 - pos * pos * pos * pos) + rand() % 32 - 16;
+  uint8_t val = constrain(val16, 0, 0xff);
 
   color = hsvToRgb(hue, 0xff, val);
 
